@@ -1,0 +1,17 @@
+{
+  "name": "serial-to-mqtt-bridge",
+  "version": "1.0.0",
+  "description": "Bridge Serial to MQTT for ESP32 RFID",
+  "main": "serial-to-mqtt.js",
+  "scripts": {
+    "start": "node serial-to-mqtt.js"
+  },
+  "dependencies": {
+    "serialport": "^13.0.0",
+    "@serialport/parser-readline": "^13.0.0",
+    "mqtt": "^5.14.1"
+  }
+}
+
+
+
