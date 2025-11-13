@@ -244,3 +244,4 @@ Frontend (Next.js)
 
 Veja `projeto-presenca-backend/LICENSE` para detalhes.
 
+# sistemas-front-back-mqtt
