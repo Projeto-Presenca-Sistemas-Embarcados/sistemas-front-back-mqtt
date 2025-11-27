@@ -1,0 +1,8 @@
+[submodule "projeto-presenca-backend"]
+	path = projeto-presenca-backend
+	url = https://github.com/Projeto-Presenca-Sistemas-Embarcados/projeto-presenca-backend.git
+
+[submodule "projeto-presenca-frontend"]
+	path = projeto-presenca-frontend
+	url = https://github.com/Projeto-Presenca-Sistemas-Embarcados/projeto-presenca-frontend.git
+
