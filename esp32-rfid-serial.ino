@@ -6,14 +6,14 @@
 #include <MFRC522.h>
 
 // Pinos
-static const uint8_t PIN_SS = 13;
-static const uint8_t PIN_RST = 33;
-static const uint8_t PIN_SCK = 27;
-static const uint8_t PIN_MISO = 25;
-static const uint8_t PIN_MOSI = 26;
-static const uint8_t PIN_LED = 2;
+static const uint8_t PIN_SDA = 4;   // SS/SDA (GPIO4 - ADC2_0, OK para SPI)
+static const uint8_t PIN_RST = 5;   // RST (GPIO5 - OK)
+static const uint8_t PIN_SCK = 18;  // SCK (GPIO18 - VSPI_SCK padrão)
+static const uint8_t PIN_MISO = 19; // MISO (GPIO19 - VSPI_MISO padrão)
+static const uint8_t PIN_MOSI = 23; // MOSI (GPIO23 - VSPI_MOSI padrão)
+static const uint8_t PIN_LED = 2;   // LED (GPIO2 - OK)
 
-MFRC522 rfid(PIN_SS, PIN_RST);
+MFRC522 rfid(PIN_SDA, PIN_RST);
 
 unsigned long lastCardRead = 0;
 const unsigned long CARD_COOLDOWN = 3000;
@@ -79,9 +79,9 @@ void setup() {
   Serial.println();
   
   // Inicializar RFID
-  pinMode(PIN_SS, OUTPUT);
-  digitalWrite(PIN_SS, HIGH);
-  SPI.begin(PIN_SCK, PIN_MISO, PIN_MOSI, PIN_SS);
+  pinMode(PIN_SDA, OUTPUT);
+  digitalWrite(PIN_SDA, HIGH);
+  SPI.begin(PIN_SCK, PIN_MISO, PIN_MOSI, PIN_SDA);
   delay(50);
   
   rfid.PCD_Init();

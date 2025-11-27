@@ -14,7 +14,7 @@ const mqtt = require('mqtt');
 
 // Configuração MQTT
 const MQTT_BROKER = process.env.MQTT_BROKER_URL || 'mqtt://localhost:1883';
-const ROOM_NAME = process.env.ROOM_NAME || '101'; // Nome exato da sala no banco de dados
+const ROOM_NAME = process.env.ROOM_NAME || 'Sala 101'; // Nome exato da sala no banco de dados
 
 // ID do ESP32 será detectado automaticamente via Serial
 let detectedESP32Id = null;
@@ -25,10 +25,19 @@ const mqttClient = mqtt.connect(MQTT_BROKER);
 
 mqttClient.on('connect', () => {
   console.log('✅ MQTT conectado!');
+  console.log(`   Broker: ${MQTT_BROKER}`);
 });
 
 mqttClient.on('error', (error) => {
   console.error('❌ Erro MQTT:', error);
+});
+
+mqttClient.on('close', () => {
+  console.warn('⚠️  Conexão MQTT fechada');
+});
+
+mqttClient.on('reconnect', () => {
+  console.log('🔄 Reconectando ao MQTT...');
 });
 
 // Encontrar porta Serial do ESP32
@@ -81,12 +90,17 @@ function processMessage(line, currentPortPath) {
   
   const parts = line.split('|');
   let tagId = '';
-  const room = ROOM_NAME;
+  let room = ROOM_NAME; // Usar padrão, mas tentar extrair da mensagem
   let esp32Id = detectedESP32Id || 'esp32-unknown';
   
   parts.forEach(part => {
     if (part.startsWith('TAG:')) {
       tagId = part.replace('TAG:', '').trim();
+    } else if (part.startsWith('ROOM:')) {
+      const msgRoom = part.replace('ROOM:', '').trim();
+      if (msgRoom) {
+        room = msgRoom; // Usar room da mensagem se disponível
+      }
     } else if (part.startsWith('ESP32:')) {
       const msgEsp32Id = part.replace('ESP32:', '').trim();
       if (msgEsp32Id) {
@@ -97,27 +111,38 @@ function processMessage(line, currentPortPath) {
   
   if (!tagId) return;
   
-  // Criar payload JSON
+  // Criar payload JSON (formato esperado pelo backend)
   const payload = {
     tagId: tagId,
     room: room,
-    esp32Id: esp32Id,
-    timestamp: Date.now()
+    esp32Id: esp32Id
   };
   
   // Publicar no MQTT
-  const topic = `presenca/attendance/${room}/${esp32Id}/tag-read`;
+  // Tópico: presenca/attendance/{sala}/{esp32Id}/tag-read
+  // Substituir espaços por _ no tópico (MQTT não aceita espaços em tópicos)
+  const topicRoom = room.replace(/\s+/g, '_');
+  const topic = `presenca/attendance/${topicRoom}/${esp32Id}/tag-read`;
+  
+  console.log(`\n📤 Publicando no MQTT:`);
+  console.log(`   Tópico: ${topic}`);
+  console.log(`   Payload: ${JSON.stringify(payload)}`);
+  console.log(`   MQTT conectado: ${mqttClient.connected}`);
   
   if (mqttClient.connected) {
-    mqttClient.publish(topic, JSON.stringify(payload), (err) => {
+    mqttClient.publish(topic, JSON.stringify(payload), { qos: 1 }, (err) => {
       if (err) {
         console.error('❌ Erro ao publicar MQTT:', err);
       } else {
-        console.log(`✅ Tag enviada: ${tagId} -> ${topic}`);
+        console.log(`✅ Tag publicada com sucesso!`);
+        console.log(`   Tag: ${tagId}`);
+        console.log(`   Sala: ${room}`);
+        console.log(`   ESP32: ${esp32Id}`);
       }
     });
   } else {
     console.warn('⚠️  MQTT desconectado, tag não enviada:', tagId);
+    console.warn('   Aguardando conexão MQTT...');
   }
 }
 
