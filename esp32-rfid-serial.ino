@@ -1,3 +1,14 @@
+/*
+  Grupo:
+  Diego Tasso da Cunha Ferreira - 1230202973
+  Lucas de Andrade Ramos Caramuru de Paiva - 1247907020
+  Maria Julia Eduarda Maia Silva - 1240202810
+  Pedro Henrique da Silva Novais - 1230119539
+  Victor Jacques Freire Sampaio - 1230203770
+  Daniel Nogueira da Silva - 1230109810
+*/
+
+
 // ESP32 RFID - Envia dados via Serial (sem WiFi)
 // O computador recebe via Serial e envia via MQTT
 #define MFRC522_SPICLOCK 1000000

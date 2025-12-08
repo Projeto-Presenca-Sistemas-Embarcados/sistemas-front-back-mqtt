@@ -1,3 +1,13 @@
+/*
+  Grupo:
+  Diego Tasso da Cunha Ferreira - 1230202973
+  Lucas de Andrade Ramos Caramuru de Paiva - 1247907020
+  Maria Julia Eduarda Maia Silva - 1240202810
+  Pedro Henrique da Silva Novais - 1230119539
+  Victor Jacques Freire Sampaio - 1230203770
+  Daniel Nogueira da Silva - 1230109810
+*/
+
 // ESP32 RFID - Versão WiFi + MQTT Direto
 // Conecta ao WiFi e envia dados diretamente para o broker MQTT
 
